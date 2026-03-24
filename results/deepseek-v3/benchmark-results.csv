@@ -1,0 +1,12 @@
+model,topology,nodes,quant,context_tokens,prompt_tps,generation_tps,peak_memory_gb,ttft_seconds,ttft_minutes,feasibility,node
+DeepSeek-V3.2,SINGLE,1,Q4,1024,234.19,20.16,380.3,4.4,0.07,practical,muladhara
+DeepSeek-V3.2,SINGLE,1,Q4,4096,216.13,16.63,382.9,19.0,0.32,practical,muladhara
+DeepSeek-V3.2,TP2,2,Q4,1024,304.39,16.21,199.8,3.4,0.06,practical,muladhara+svadhisthana
+DeepSeek-V3.2,TP2,2,Q4,4096,328.74,14.03,199.8,12.5,0.21,practical,muladhara+svadhisthana
+DeepSeek-V3.2,TP2,2,Q4,16384,196.92,13.18,201.8,83.2,1.39,practical,muladhara+svadhisthana
+DeepSeek-V3.2,TP2,2,Q4,32768,118.48,12.61,213.0,276.6,4.61,practical,muladhara+svadhisthana
+DeepSeek-V3.2,TP4,4,Q4,1024,596.59,16.9,107.9,1.7,0.03,practical,muladhara+svadhisthana+anahata+manipura
+DeepSeek-V3.2,TP4,4,Q4,4096,547.72,14.81,107.9,7.5,0.12,practical,muladhara+svadhisthana+anahata+manipura
+DeepSeek-V3.2,TP4,4,Q4,16384,311.27,13.76,107.9,52.6,0.88,practical,muladhara+svadhisthana+anahata+manipura
+DeepSeek-V3.2,TP4,4,Q4,32768,175.82,13.06,114.3,186.4,3.11,practical,muladhara+svadhisthana+anahata+manipura
+DeepSeek-V3.2,TP4,4,Q4,65536,99.21,12.23,131.9,660.6,11.01,practical,muladhara+svadhisthana+anahata+manipura

@@ -1,0 +1,6 @@
+model,quant,perplexity,perplexity_std,peak_memory_gb,dataset,num_samples,sequence_length,batch_size,tokens_per_second,node
+Mistral-7B-Instruct-v0.3,Q8,4.374,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Mistral-7B-Instruct-v0.3,Q6,4.39,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Mistral-7B-Instruct-v0.3,Q4,4.494,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Mistral-7B-Instruct-v0.3,Q3,4.819,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Mistral-7B-Instruct-v0.3,Q2,13.451,,,allenai/tulu-3-sft-mixture,256,512,8,,

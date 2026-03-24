@@ -1,0 +1,14 @@
+.env
+__pycache__/
+*.pyc
+.DS_Store
+
+# Tooling — kept locally, not published
+# Charts, reports, and watermarks are generated locally
+# and committed as finished output only
+charts/*.py
+charts/__pycache__/
+.env.example
+CODEOWNERS
+.github/
+STYLE_GUIDE.md

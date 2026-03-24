@@ -1,0 +1,16 @@
+model,topology,nodes,quant,context_tokens,prompt_tps,generation_tps,peak_memory_gb,ttft_seconds,ttft_minutes,feasibility,node
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q4,1024,1646.761,119.007,4.94,0.6,0.01,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q4,4096,1600.163,92.427,6.522,2.6,0.04,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q4,8192,1478.994,71.187,8.742,5.5,0.09,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q4,16384,1289.107,49.154,13.244,12.7,0.21,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q4,32768,1020.953,30.894,22.371,32.1,0.53,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q4,65536,723.845,17.697,40.624,90.5,1.51,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q4,131072,459.176,9.529,77.115,285.5,4.76,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q2,1024,1646.589,156.399,3.356,0.6,0.01,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q2,16384,1287.91,54.752,11.621,12.7,0.21,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q3,1024,1642.473,131.203,4.193,0.6,0.01,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q3,16384,1287.602,51.375,12.463,12.7,0.21,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q6,1024,1595.796,88.471,6.597,0.6,0.01,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q6,16384,1262.182,43.196,14.929,13.0,0.22,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q8,1024,1626.923,76.133,8.198,0.6,0.01,practical,muladhara
+DeepSeek-Coder-6.7B-Instruct,SINGLE,1,Q8,16384,1285.292,40.19,16.614,12.7,0.21,practical,muladhara

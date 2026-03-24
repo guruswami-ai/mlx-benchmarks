@@ -1,0 +1,6 @@
+model,quant,perplexity,perplexity_std,peak_memory_gb,dataset,num_samples,sequence_length,batch_size,tokens_per_second,node
+Gemma-2-9B-It,Q8,8.944,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Gemma-2-9B-It,Q6,8.926,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Gemma-2-9B-It,Q4,9.143,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Gemma-2-9B-It,Q3,11.911,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Gemma-2-9B-It,Q2,337.031,,,allenai/tulu-3-sft-mixture,256,512,8,,

@@ -1,0 +1,6 @@
+model,quant,perplexity,perplexity_std,peak_memory_gb,dataset,num_samples,sequence_length,batch_size,tokens_per_second,node
+Mixtral-8x7B-Instruct,Q8,4.428,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Mixtral-8x7B-Instruct,Q6,4.422,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Mixtral-8x7B-Instruct,Q4,4.639,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Mixtral-8x7B-Instruct,Q3,5.069,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Mixtral-8x7B-Instruct,Q2,18.302,,,allenai/tulu-3-sft-mixture,256,512,8,,

@@ -1,0 +1,11 @@
+model,topology,nodes,quant,context_tokens,prompt_tps,generation_tps,peak_memory_gb,ttft_seconds,ttft_minutes,feasibility,node
+Kimi-K2.5,TP2,2,Q4,1024,362.31,14.34,345.5,2.8,0.05,practical,muladhara+svadhisthana
+Kimi-K2.5,TP2,2,Q4,4096,407.39,14.52,345.8,10.1,0.17,practical,muladhara+svadhisthana
+Kimi-K2.5,TP2,2,Q4,16384,328.11,13.52,345.8,49.9,0.83,practical,muladhara+svadhisthana
+Kimi-K2.5,TP2,2,Q4,32768,277.94,12.1,345.8,117.9,1.96,practical,muladhara+svadhisthana
+Kimi-K2.5,TP4,4,Q4,1024,555.1,16.11,186.7,1.8,0.03,practical,muladhara+svadhisthana+anahata+manipura
+Kimi-K2.5,TP4,4,Q4,4096,651.14,16.12,186.7,6.3,0.1,practical,muladhara+svadhisthana+anahata+manipura
+Kimi-K2.5,TP4,4,Q4,16384,566.65,14.92,186.7,28.9,0.48,practical,muladhara+svadhisthana+anahata+manipura
+Kimi-K2.5,TP4,4,Q4,32768,472.47,13.96,186.7,69.4,1.16,practical,muladhara+svadhisthana+anahata+manipura
+Kimi-K2.5,TP4,4,Q4,65536,337.37,11.82,186.7,194.3,3.24,practical,muladhara+svadhisthana+anahata+manipura
+Kimi-K2.5,SINGLE,1,Q4,0,,,614,,,oom_614gb_exceeds_512gb,N/A

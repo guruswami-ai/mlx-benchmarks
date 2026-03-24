@@ -1,0 +1,7 @@
+model,quant,perplexity,perplexity_std,peak_memory_gb,dataset,num_samples,sequence_length,batch_size,tokens_per_second,node
+Meta-Llama-3.1-8B-Instruct,Q8,5.471,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Meta-Llama-3.1-8B-Instruct,Q6,5.485,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Meta-Llama-3.1-8B-Instruct,Q5,5.467,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Meta-Llama-3.1-8B-Instruct,Q4,5.572,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Meta-Llama-3.1-8B-Instruct,Q3,7.077,,,allenai/tulu-3-sft-mixture,256,512,8,,
+Meta-Llama-3.1-8B-Instruct,Q2,2132.152,,,allenai/tulu-3-sft-mixture,256,512,8,,

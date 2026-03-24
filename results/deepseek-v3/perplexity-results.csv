@@ -1,0 +1,2 @@
+model,quant,perplexity,perplexity_std,peak_memory_gb,dataset,num_samples,sequence_length,batch_size,tokens_per_second,node
+DeepSeek-V3.2,Q4,3.12,,,allenai/tulu-3-sft-mixture,256,512,8,,

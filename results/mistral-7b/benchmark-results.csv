@@ -1,0 +1,16 @@
+model,topology,nodes,quant,context_tokens,prompt_tps,generation_tps,peak_memory_gb,ttft_seconds,ttft_minutes,feasibility,node
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q4,1024,1554.994,123.461,4.929,0.7,0.01,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q4,4096,1522.328,114.649,5.415,2.7,0.04,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q4,8192,1421.95,104.193,5.856,5.8,0.1,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q4,16384,1253.394,87.397,6.862,13.1,0.22,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q4,32768,1008.495,68.092,9.094,32.5,0.54,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q4,65536,724.013,46.737,13.582,90.5,1.51,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q4,131072,463.759,29.061,22.709,282.6,4.71,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q2,1024,1557.17,168.701,3.108,0.7,0.01,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q2,16384,1251.206,106.191,5.051,13.1,0.22,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q3,1024,1554.922,140.426,4.014,0.7,0.01,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q3,16384,1250.422,96.431,5.957,13.1,0.22,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q6,1024,1499.574,91.472,6.741,0.7,0.01,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q6,16384,1226.162,71.526,8.674,13.4,0.22,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q8,1024,1527.665,75.613,8.553,0.7,0.01,practical,muladhara
+Mistral-7B-Instruct-v0.3,SINGLE,1,Q8,16384,1250.502,61.167,10.428,13.1,0.22,practical,muladhara

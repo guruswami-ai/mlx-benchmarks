@@ -1,0 +1,6 @@
+model,quant,perplexity,perplexity_std,peak_memory_gb,dataset,num_samples,sequence_length,batch_size,tokens_per_second,node
+DeepSeek-Coder-V2-Lite-Instruct,Q8,5.346,,,allenai/tulu-3-sft-mixture,256,512,8,,
+DeepSeek-Coder-V2-Lite-Instruct,Q6,5.357,,,allenai/tulu-3-sft-mixture,256,512,8,,
+DeepSeek-Coder-V2-Lite-Instruct,Q4,5.634,,,allenai/tulu-3-sft-mixture,256,512,8,,
+DeepSeek-Coder-V2-Lite-Instruct,Q3,6.299,,,allenai/tulu-3-sft-mixture,256,512,8,,
+DeepSeek-Coder-V2-Lite-Instruct,Q2,23.045,,,allenai/tulu-3-sft-mixture,256,512,8,,
