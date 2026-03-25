@@ -2,7 +2,26 @@
 
 The blue screen of death for distributed inference - except more polite and less obvious. No crash dialog. No error popup. Just a `errno 96` buried in stderr and your benchmark silently producing garbage while you wonder why TP4 is slower than single-node.
 
-Documented during systematic benchmarking of MLX distributed inference on a 5-node M3 Ultra cluster connected via Thunderbolt 5 RDMA (JACCL backend). These failure modes were observed with MLX 0.30.7 and mlx-lm 0.30.8 on macOS 26.3.1 (Tahoe). All are reproducible. None produce helpful error messages. We found them by running into each one, losing hours of benchmark time, and documenting the fix so you do not have to.
+Documented during systematic benchmarking of MLX distributed inference on a 5-node M3 Ultra cluster connected via Thunderbolt 5 RDMA (JACCL backend). All are reproducible. None produce helpful error messages. We found them by running into each one, losing hours of benchmark time, and documenting the fix so you do not have to.
+
+### Environment (when these were observed)
+
+| Component | Version |
+|-----------|---------|
+| **Hardware** | Mac Studio M3 Ultra (Mac15,14), 512 GB unified memory |
+| **macOS** | 26.3.1 Tahoe (Build 25D2128, Darwin 25.3.0) |
+| **MLX** | 0.30.7.dev20260302+7f2d80a5 |
+| **mlx-lm** | 0.30.8 |
+| **Python** | 3.12.12 |
+| **Distributed backend** | JACCL over Thunderbolt 5 RDMA |
+| **AppleThunderboltRDMA kext** | 0.0.1 |
+| **IOThunderboltFamily kext** | 9.3.3 |
+| **ThunderboltNHI driver** | 7.2.81 |
+| **Nodes** | 5 identical (muladhara, svadhisthana, manipura, anahata, vishuddha) |
+| **TB5 cables** | Full mesh topology, 10 cables, standard TB5 passive |
+| **Benchmark period** | March 2026 |
+
+These failure modes are likely tied to the `AppleThunderboltRDMA` kernel extension (version 0.0.1 suggests early/pre-release). They may be resolved in future macOS or MLX releases. If you encounter these on different versions, the symptoms and fixes are likely the same but please verify.
 
 ![RDMA Failure Diagnosis](../assets/docs/rdma-failure-diagnosis.jpg)
 
