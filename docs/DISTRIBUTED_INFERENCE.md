@@ -13,7 +13,23 @@ Every layer of the model is split across nodes. Each node holds a slice of every
 **Pro:** Evenly splits memory. All nodes work simultaneously.
 **Con:** Lots of communication. A 126-layer model means 126 synchronisation points per token. Each sync adds latency.
 
-**Not all models can be split any way you want.** TP requires the model's attention heads to divide evenly by the number of nodes. Llama 405B has 128 attention heads: TP2 (64 heads each) and TP4 (32 heads each) work, but TP3 (42.67 heads) and TP5 (25.6 heads) are mathematically impossible. This is a hard architectural constraint, not a software limitation.
+**Not all models can be split any way you want.** TP requires attention heads to divide evenly by the number of nodes. Most frameworks check both query heads and KV heads. This creates two different failure modes:
+
+**Hard math failure (model will not load):**
+Llama 405B has 128 query heads and 8 KV heads. TP5 fails because 128/5=25.6 (Q heads) and 8/5=1.6 (KV heads). Neither divides cleanly. Same for Mixtral (32 Q heads), DeepSeek V3 (128 Q heads), Kimi K2.5 (64 Q heads). TP5 is mathematically impossible on these models.
+
+**Soft infrastructure failure (model could load but doesn't work reliably):**
+Qwen 32B has 40 query heads and 8 KV heads. TP5 passes the Q head check (40/5=8) but fails the KV head check in vLLM (8/5=1.6). Other frameworks might handle KV head padding differently. Even if it loaded, our TB5 RDMA mesh was not stable enough at TP5 to produce publishable numbers.
+
+| Model | Q heads | KV heads | TP5 Q check | TP5 KV check | Result |
+|-------|---------|----------|------------|-------------|--------|
+| Qwen 32B | 40 | 8 | 40/5=8 pass | 8/5=1.6 fail | Framework-dependent |
+| Llama 405B | 128 | 8 | 128/5=25.6 fail | 8/5=1.6 fail | Mathematically impossible |
+| Mixtral 8x7B | 32 | 8 | 32/5=6.4 fail | 8/5=1.6 fail | Mathematically impossible |
+| DeepSeek V3 | 128 | MLA | 128/5=25.6 fail | N/A | Mathematically impossible |
+| Kimi K2.5 | 64 | MLA | 64/5=12.8 fail | N/A | Mathematically impossible |
+
+We only publish TP2 and TP4 results. Both divide cleanly into 8 KV heads (8/2=4, 8/4=2) across all models.
 
 ---
 
