@@ -70,17 +70,27 @@ def collect(path, interval):
                 s = scrape(h)
                 if s:
                     rec["nodes"][h] = s
-            tot = sum(
-                v.get("mactop_power_watts.total", 0.0) for v in rec["nodes"].values()
-            )
-            rec["cluster_watts"] = round(tot, 2)
+            # A node whose exporter timed out is simply absent from rec["nodes"].
+            # Summing what remains produces a plausible-looking but artificially
+            # LOW cluster total, which then silently drags down the mean-power and
+            # Wh-per-1k-token headline figures. Mark the sample incomplete instead
+            # and let summarise() drop it.
+            rec["complete"] = len(rec["nodes"]) == len(NODES)
+            rec["missing"] = [h for h in NODES if h not in rec["nodes"]]
+            if rec["complete"]:
+                rec["cluster_watts"] = round(
+                    sum(v.get("mactop_power_watts.total", 0.0)
+                        for v in rec["nodes"].values()), 2
+                )
+            else:
+                rec["cluster_watts"] = None
             fh.write(json.dumps(rec) + "\n")
             fh.flush()
             time.sleep(max(0.0, interval - (time.time() - t)))
 
 
 def summarise(path, t0=None, t1=None):
-    rows = []
+    rows, skipped = [], []
     with open(path) as fh:
         for line in fh:
             try:
@@ -91,10 +101,22 @@ def summarise(path, t0=None, t1=None):
                 continue
             if t1 and d["t"] > t1:
                 continue
+            # Drop partial samples -- see collect(). Including them would understate
+            # cluster power with no visible symptom at all.
+            if d.get("cluster_watts") is None or d.get("complete") is False:
+                skipped.append(d)
+                continue
             rows.append(d)
     if not rows:
-        print("no samples in window")
+        print("no complete samples in window")
         return
+    if skipped:
+        miss = {}
+        for d in skipped:
+            for h in d.get("missing", []):
+                miss[h] = miss.get(h, 0) + 1
+        print(f"WARNING: {len(skipped)} incomplete sample(s) EXCLUDED "
+              f"(unreachable: {miss})")
 
     cw = [r["cluster_watts"] for r in rows]
     span = rows[-1]["t"] - rows[0]["t"]

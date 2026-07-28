@@ -538,7 +538,12 @@ mlx.distributed_config --over thunderbolt --hosts <n1,n2,n3,n4> --dot
 sudo mlx.distributed_config --over thunderbolt --hosts <...> \
      --backend jaccl --auto-setup --output-hostfile <hostfile>
 
-# 4. Restore MTU (step 3 resets it to 1500)
+# 4. (optional) MTU 9000 on the TB interfaces.
+#    NOT required for RDMA: measured 9.05 vs 8.93 GB/s at 134 MB between MTU
+#    9000 and 1500 -- within noise, because RDMA uses neither TCP/IP nor
+#    Ethernet frames. mlx.distributed_config does NOT reset MTU either (no
+#    `mtu` anywhere in its source; interfaces read 9000 immediately after
+#    --auto-setup). Keep this only if you also use the `ring` backend over TB.
 sudo tb5-init.sh --mtu-only     # on every node
 
 # 5. Broadcast the model FIRST, before any other RDMA op

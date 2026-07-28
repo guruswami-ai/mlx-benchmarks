@@ -21,7 +21,12 @@ errors. **The real error is at the top.** Two specific traps:
   permissions or path problem, not a network one.
 
 ```bash
-mlx.launch --hostfile hf.json ./job.py 2>&1 | head -40      # head, not tail
+# Capture everything, THEN read the top. Do not pipe a running launcher
+# into `head`: it closes the pipe after N lines, and the resulting SIGPIPE
+# can kill the launcher and strand remote ranks -- which on this stack
+# costs a reboot.
+mlx.launch --hostfile hf.json ./job.py > launch.log 2>&1
+head -40 launch.log        # head, not tail
 ```
 
 ## Step 1 — Is it erroring, or is it hanging? They are different problems

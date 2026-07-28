@@ -8,7 +8,8 @@ Measures, per point:
   ttft_s        time to first token (streaming) -- the interactive metric
   decode_tps    tokens/s once generation starts, per stream
   agg_tps       aggregate tokens/s across all concurrent streams
-  prefill_tps   prompt tokens / (ttft - fixed overhead estimate)
+  prefill_tps_lower_bound   prompt tokens / TTFT. TTFT also carries per-request
+                fixed overhead, so this UNDERSTATES true prefill throughput.
 
 Usage:
   bench_matrix.py concurrency   # sweep concurrency at short context
@@ -52,6 +53,7 @@ def stream_one(uid, ctx_words, max_tokens, results, lock):
     t0 = time.time()
     ttft = None
     n = 0
+    prompt_tokens = None
     try:
         with urllib.request.urlopen(req, timeout=7200) as r:
             for raw in r:
@@ -65,6 +67,8 @@ def stream_one(uid, ctx_words, max_tokens, results, lock):
                     d = json.loads(payload, strict=False)
                 except Exception:
                     continue
+                if d.get("usage", {}).get("prompt_tokens"):
+                    prompt_tokens = d["usage"]["prompt_tokens"]
                 delta = d.get("choices", [{}])[0].get("delta", {})
                 if delta.get("content"):
                     if ttft is None:
@@ -74,6 +78,7 @@ def stream_one(uid, ctx_words, max_tokens, results, lock):
         with lock:
             results.append(
                 {"uid": uid, "ttft_s": ttft, "tokens": n, "wall_s": total,
+                 "prompt_tokens": prompt_tokens,
                  "decode_tps": (n - 1) / (total - ttft) if ttft and total > ttft and n > 1 else None}
             )
     except Exception as e:  # noqa: BLE001
@@ -97,6 +102,7 @@ def run_point(concurrency, ctx_words, max_tokens):
 
     ok = [r for r in results if "error" not in r]
     toks = sum(r["tokens"] for r in ok)
+    ptok = next((r.get("prompt_tokens") for r in ok if r.get("prompt_tokens")), None)
     ttfts = [r["ttft_s"] for r in ok if r.get("ttft_s")]
     dtps = [r["decode_tps"] for r in ok if r.get("decode_tps")]
     return {
@@ -110,6 +116,9 @@ def run_point(concurrency, ctx_words, max_tokens):
         "ttft_s_min": round(min(ttfts), 2) if ttfts else None,
         "ttft_s_max": round(max(ttfts), 2) if ttfts else None,
         "decode_tps_mean": round(sum(dtps) / len(dtps), 3) if dtps else None,
+        "prompt_tokens": ptok,
+        "prefill_tps_lower_bound": (round(ptok / (sum(ttfts) / len(ttfts)), 1)
+                                    if ptok and ttfts else None),
         "errors": len(results) - len(ok),
     }
 
