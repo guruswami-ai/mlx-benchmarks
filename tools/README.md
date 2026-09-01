@@ -37,12 +37,21 @@ only change is `model_file` removed from a copied `config.json`:
 |---|---:|---:|
 | 64 K prefill, 65,407 tokens | 2,341.7 s | **431.7 s** |
 | Prefill rate | 28.0 tok/s | **151.7 tok/s** |
-| Memory-guard restarts | 2 | **0** |
-| 128 K prefill, 130,100 tokens | 5,968.8 s | **2,009.3 s** |
-| Decode | 16.4 tok/s | 14.7 tok/s |
-| Needle retrieval at 64 K and 128 K | correct | correct |
+| Needle retrieval at 64 K | correct | correct |
 
-Output was correct throughout. Only speed changed.
+Both rows are the same runtime, the same weights and the same 65,407-token
+prompt, with `cached_tokens: 0` on each side. Output was correct on both.
+
+An earlier version of this table also carried a 128 K row and a decode row. Both
+were withdrawn after review. The 128 K "before" figure came from a different
+serving stack, so the comparison was not like-for-like, and the "after" figure
+had about a quarter of its prefill served from prefix cache. The decode figures
+were taken over different generation lengths. Only the 64 K pair above survives
+as a controlled measurement.
+
+Note also that the 64 K "before" run hit the runtime's adaptive prefill memory
+guard, which interrupts and throttles. Its wall time is therefore a measure of
+the whole slow path, not of attention kernels alone.
 
 The failure is hard to see. The runtime logged that its optimised module
 registered and that its native kernels were available, and both statements were

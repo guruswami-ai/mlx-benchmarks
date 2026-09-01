@@ -43,7 +43,7 @@ def runtime_kernels():
     found = {}
     try:
         import omlx  # noqa: F401
-        for mt in ("glm_moe_dsa",):
+        for mt in ("glm_moe_dsa", "deepseek_v32", "glm5_next", "deepseek_v4"):
             syms = _accelerated_for(mt)
             found["omlx.custom_kernels.%s" % mt] = syms or "no accelerated symbols"
     except ImportError:
@@ -70,7 +70,11 @@ def inspect(path):
 
     model_file = cfg.get("model_file")
     model_type = cfg.get("model_type", "?")
-    trc = cfg.get("trust_remote_code")
+    # trust_remote_code does not live in config.json. mlx-lm takes it as a load()
+    # argument; oMLX keeps it per-model in model_settings.json. Reporting it from
+    # here printed "None" beside a SHADOWING verdict, which reads as "remote code
+    # is off, this cannot bite you". It can.
+    trc = "see the runtime's own setting, not config.json"
     bundled = sorted(f for f in os.listdir(path) if f.endswith(".py"))
 
     if not model_file:
@@ -82,10 +86,17 @@ def inspect(path):
 
     if not present:
         return "WARN", detail
+    # A declared and present model_file is a finding on its own. The kernel probe
+    # raises confidence; it must not gate the verdict, or this returns "nothing
+    # found" on exactly the machine the check exists for: one where the runtime
+    # is absent or its native extension was never built.
     accel = _accelerated_for(model_type)
     if accel:
         return "SHADOWING", detail + "\n      runtime offers: %s" % accel
-    return "WARN", detail + "\n      no optimised runtime path found for this model_type"
+    return "SHADOWING", detail + (
+        "\n      no accelerated symbols visible here. That does NOT mean you are"
+        "\n      safe: the runtime may be absent, or built without its native"
+        "\n      extension. Re-run on the serving host before concluding.")
 
 
 def _accelerated_for(model_type):
