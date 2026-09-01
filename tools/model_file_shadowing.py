@@ -42,12 +42,19 @@ def runtime_kernels():
     """Report which optimised implementations the installed runtime offers."""
     found = {}
     try:
-        import omlx  # noqa: F401
-        for mt in ("glm_moe_dsa", "deepseek_v32", "glm5_next", "deepseek_v4"):
+        import pkgutil
+        import omlx.custom_kernels as ck
+        # Enumerate what is installed. A hardcoded list of model types goes stale
+        # every time the runtime adds one, and a model type missing from the list
+        # reported nothing rather than reporting that it was never looked at.
+        mts = sorted(m.name for m in pkgutil.iter_modules(ck.__path__) if m.ispkg)
+        if not mts:
+            found["omlx.custom_kernels"] = "installed, no kernel packages found"
+        for mt in mts:
             syms = _accelerated_for(mt)
             found["omlx.custom_kernels.%s" % mt] = syms or "no accelerated symbols"
-    except ImportError:
-        found["omlx"] = "not installed"
+    except ImportError as exc:
+        found["omlx.custom_kernels"] = "not importable: %s" % exc
     for mod in ("mlx_lm", "mlx_vlm"):
         try:
             m = __import__(mod)
@@ -75,12 +82,19 @@ def inspect(path):
     # here printed "None" beside a SHADOWING verdict, which reads as "remote code
     # is off, this cannot bite you". It can.
     trc = "see the runtime's own setting, not config.json"
-    bundled = sorted(f for f in os.listdir(path) if f.endswith(".py"))
-
     if not model_file:
         return "OK", "model_type=%s, no model_file declared" % model_type
 
-    present = model_file in bundled
+    # model_file is a path relative to the checkpoint directory, not a bare
+    # filename. Matching it against os.listdir() misses "code/model.py" and
+    # reports DECLARED BUT ABSENT, which reads as harmless. It is not.
+    candidate = os.path.normpath(os.path.join(path, model_file))
+    inside = os.path.commonpath([os.path.abspath(path), os.path.abspath(candidate)]) \
+             == os.path.abspath(path)
+    present = inside and os.path.isfile(candidate)
+    if not inside:
+        return "WARN", ("model_type=%s, model_file=%s resolves outside the checkpoint"
+                        " directory. Do not load this checkpoint." % (model_type, model_file))
     detail = "model_type=%s, model_file=%s%s, trust_remote_code=%s" % (
         model_type, model_file, "" if present else " (DECLARED BUT ABSENT)", trc)
 
@@ -106,16 +120,27 @@ def _accelerated_for(model_type):
     are searched. Looking only at the package reports nothing and is the reason
     an earlier version of this check was useless.
     """
-    names = []
+    names, seen, public = [], False, []
     for modname in ("omlx.custom_kernels.%s.fast" % model_type,
                     "omlx.custom_kernels.%s" % model_type):
         try:
             mod = __import__(modname, fromlist=["*"])
         except Exception:
             continue
+        seen = True
         names += [s for s in dir(mod) if any(h in s for h in ACCEL_HINTS)]
+        public += [s for s in dir(mod) if not s.startswith("_")]
     uniq = sorted(set(names))
-    return ", ".join(uniq) if uniq else None
+    if uniq:
+        return ", ".join(uniq)
+    if seen and public:
+        # The module imported but nothing matched ACCEL_HINTS. That is a gap in
+        # this script's vocabulary, not proof the runtime has no fast path. Say
+        # so, rather than returning the same None as "module not installed".
+        return ("no symbol matched %s, but the module is present with %d public"
+                " names. Read it before concluding."
+                % ("/".join(ACCEL_HINTS), len(set(public))))
+    return None
 
 
 def main(argv):
