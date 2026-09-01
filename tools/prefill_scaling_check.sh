@@ -101,9 +101,18 @@ def measure(target, tag):
         sys.exit(1)
     u = d.get("usage") or {}
     pt = u.get("prompt_tokens")
-    cached = (u.get("prompt_tokens_details") or {}).get("cached_tokens") or 0
+    details = u.get("prompt_tokens_details")
+    cached = (details or {}).get("cached_tokens")
     if not pt:
         print("FAIL: no prompt_tokens in usage at ~%d tokens" % target); sys.exit(1)
+    if cached is None:
+        # Fail closed. A runtime that does not report cached_tokens cannot prove
+        # the prefill was cold, and a cache hit would read as a fast dense path.
+        print("FAIL: runtime does not report prompt_tokens_details.cached_tokens.")
+        print("      Cold prefill cannot be proven, so the rate is not evidence.")
+        print("      Restart the server between measurements and re-run, or use a")
+        print("      runtime that reports cache attribution.")
+        sys.exit(1)
     if cached:
         print("FAIL: %d of %d tokens served from prefix cache. Rate is not measurable."
               % (cached, pt))
