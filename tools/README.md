@@ -33,21 +33,38 @@ Measured on GLM-5.3 4-bit (744 B MoE, MLA + DeepSeek Sparse Attention) on one
 M3 Ultra 512 GB under oMLX 0.6.4. Same weights, same server, same settings. The
 only change is `model_file` removed from a copied `config.json`:
 
-| | Bundled file | Runtime kernels |
-|---|---:|---:|
-| 64 K prefill, 65,407 tokens | 2,341.7 s | **431.7 s** |
-| Prefill rate | 28.0 tok/s | **151.7 tok/s** |
-| Needle retrieval at 64 K | correct | correct |
+**The effect depends on context, so a single number misleads.** Measured over a
+prompt-length ladder, with a cold server for each arm and `cached_tokens: 0` on
+every rung. The two arms read the same 3,355 tensors from the same 79 shards; a
+symlinked clone makes `config.json` the only difference between them:
 
-Both rows are the same runtime, the same weights and the same 65,407-token
-prompt, with `cached_tokens: 0` on each side. Output was correct on both.
+| Prompt tokens | Bundled file | Runtime kernels | Ratio |
+|---:|---:|---:|---:|
+| 1,024 | 190.0 tok/s | 194.6 tok/s | 1.02 |
+| 4,096 | 185.8 | 196.4 | 1.06 |
+| 8,192 | 161.3 | 171.7 | 1.06 |
+| 16,384 | 125.8 | 160.3 | 1.27 |
+| 32,768 | 85.5 | **153.7** | **1.80** |
 
-An earlier version of this table also carried a 128 K row and a decode row. Both
-were withdrawn after review. The 128 K "before" figure came from a different
-serving stack, so the comparison was not like-for-like, and the "after" figure
-had about a quarter of its prefill served from prefix cache. The decode figures
-were taken over different generation lengths. Only the 64 K pair above survives
-as a controlled measurement.
+Below 8 K the two are indistinguishable, because the sparse path does not engage
+on a short prompt. The bundled implementation computes dense attention, so it
+sheds rate as context grows while the kernel path stays near flat. Anyone who
+benchmarks this at 4 K will measure nothing and wrongly conclude the checkpoint
+is fine.
+
+**Correction, 2 September 2026.** An earlier version of this page reported a
+single 5.4x figure at 64 K, from 28.0 tok/s against 151.7 tok/s. That comparison
+was not clean. The slow arm tripped the serving runtime's adaptive prefill memory
+guard, which restarts the prefill and reduces the chunk size, so its wall time
+measured the whole slow path rather than attention alone. The ladder above holds
+the guard inactive on both arms and isolates the kernels. Treat 1.80x at 32 K as
+the measured effect and expect it to keep growing with context.
+
+The same review withdrew a 128 K row and a decode row. The 128 K "before" figure
+came from a different serving stack, and its "after" figure had about a quarter
+of its prefill served from prefix cache. The decode figures were taken over
+different generation lengths. On the ladder above, the kernels also help decode,
+but only slightly: 17.2 tok/s against 15.8 at 32 K.
 
 Note also that the 64 K "before" run hit the runtime's adaptive prefill memory
 guard, which interrupts and throttles. Its wall time is therefore a measure of

@@ -27,9 +27,10 @@
 #
 # Why this exists. On 1 September 2026 a GLM-5.3 checkpoint was found to shadow
 # oMLX's compiled sparse Metal kernels, because the checkpoint declared
-# `model_file` in config.json. Prefill ran 5.4 times slower than necessary. The
-# server logged three lines saying the optimised kernels loaded, and all three
-# were true. Only the rate curve showed the fault.
+# `model_file` in config.json. Prefill ran 1.8 times slower at 32K, and the gap
+# widens with context. The server logged three lines saying the optimised
+# kernels loaded, and all three were true. Only the rate curve showed the fault.
+# That is the whole argument for measuring a curve rather than a point.
 #
 # Fail-closed. A run that cannot measure is a FAIL, not a skip.
 #

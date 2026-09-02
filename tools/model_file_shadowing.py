@@ -12,18 +12,32 @@ and that its native kernels are available, and both statements are true. The
 model simply never reaches them.
 
 Measured effect on GLM-5.3 4-bit (744B MoE, MLA + DeepSeek Sparse Attention) on
-an M3 Ultra under oMLX 0.6.4: 64K prefill took 2341.7 s with the bundled file
-and 431.7 s without it, on the same weights and the same server. Prefill went
-from 28.0 to 151.7 tok/s. Output was correct in both cases.
+an M3 Ultra under oMLX 0.6.4, over a prompt-length ladder with a cold server per
+arm. The two arms read the same 3355 tensors from the same 79 shards, so
+config.json is the only difference:
+
+    prompt   bundled   kernels   ratio
+     1,024     190.0     194.6    1.02
+     8,192     161.3     171.7    1.06
+    16,384     125.8     160.3    1.27
+    32,768      85.5     153.7    1.80   tok/s
+
+The bundled file computes dense attention and sheds rate with context; the
+kernel path stays near flat. Below 8K the two are indistinguishable, so a short
+benchmark will show nothing. Output was correct in both cases.
+
+An earlier version of this file reported 5.4x at 64K. That arm tripped the
+runtime's adaptive prefill memory guard, so the figure measured the whole slow
+path rather than attention alone. Corrected 2 September 2026.
 
 This script is static. It does not load weights and it does not run inference.
 
 Usage:
-    check-model-file-shadowing.py /path/to/checkpoint [/path/to/another ...]
-    check-model-file-shadowing.py --runtime-only
+    model_file_shadowing.py /path/to/checkpoint [/path/to/another ...]
+    model_file_shadowing.py --runtime-only
 
-Exit: 0 nothing found, 1 at least one checkpoint is shadowing an available
-optimised path, 2 usage error.
+Exit: 0 nothing found, 1 at least one checkpoint declares a present model_file
+(shadowing, whether or not kernels are visible here), 2 usage error.
 
 No warranty. Verify against your own runtime before acting on it.
 """
@@ -146,7 +160,7 @@ def _accelerated_for(model_type):
 def main(argv):
     if "--help" in argv or "-h" in argv:
         print(__doc__)
-        return 2
+        return 0
     print("runtime:")
     for k, v in runtime_kernels().items():
         print("  %-38s %s" % (k, v))
