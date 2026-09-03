@@ -1,0 +1,6 @@
+model,quant,prompt,decode_tps,mtp_depth,mtp_accept_pct,condition
+GLM-5.3,mixed-4_8bit+MTP,code /v1/completions,20.5,1,94.6,"400 tokens, temperature 0, second request in process"
+GLM-5.3,mixed-4_8bit+MTP,prose chat,20.6,1,85.1,"400 tokens, temperature 0, second request in process"
+GLM-5.3,4bit+MTP,code /v1/completions,23.8,1,97.0,"400 tokens, temperature 0, second request in process"
+GLM-5.3,4bit+MTP,prose chat,23.1,1,80.9,"400 tokens, temperature 0, second request in process"
+GLM-5.3,"4bit, no MTP",code /v1/completions,18.3,0,,"400 tokens, temperature 0, second request in process"

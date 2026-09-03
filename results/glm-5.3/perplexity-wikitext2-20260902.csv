@@ -1,0 +1,5 @@
+model,quant,perplexity,ci95_low,ci95_high,dataset,windows,window_tokens,platform,harness
+GLM-5.3,mixed-4_8bit,2.8227,2.6279,3.0346,wikitext-2 test,142,2048,Apple M3 Ultra 512GB,"ppl_wikitext2.py, oMLX pre-load chain"
+GLM-5.3,4bit,2.9477,2.7457,3.1677,wikitext-2 test,142,2048,Apple M3 Ultra 512GB,"ppl_wikitext2.py, oMLX pre-load chain"
+GLM-5.3,mixed-4_8bit (publisher),2.742,2.5533,2.9477,wikitext-2 test,141,2048,Apple M3 Ultra 512GB,pipenetwork ppl_compare.py
+GLM-5.3,4bit (publisher),2.8636,2.6681,3.0714,wikitext-2 test,141,2048,Apple M3 Ultra 512GB,pipenetwork ppl_compare.py

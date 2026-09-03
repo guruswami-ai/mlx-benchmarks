@@ -1,0 +1,29 @@
+run,category,accuracy
+1,biology,1.0
+1,business,0.8
+1,chemistry,0.9286
+1,computer science,0.8
+1,economics,0.8095
+1,engineering,0.875
+1,health,0.8
+1,history,0.5556
+1,law,0.7407
+1,math,0.9412
+1,other,0.8261
+1,philosophy,0.8333
+1,physics,0.9375
+1,psychology,0.7727
+2,biology,1.0
+2,business,0.8
+2,chemistry,0.9286
+2,computer science,0.8
+2,economics,0.8095
+2,engineering,0.875
+2,health,0.8
+2,history,0.5556
+2,law,0.7778
+2,math,0.9412
+2,other,0.8261
+2,philosophy,0.8333
+2,physics,0.9688
+2,psychology,0.7727

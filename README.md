@@ -37,6 +37,7 @@ For now, here are the benchmarks and the methodology behind them.
 | [Llama 3.1 405B](charts/output/llama-405b/) | 405B | Dense | + topology comparison |
 | [DeepSeek V3](charts/output/deepseek-v3/) | 671B (37B active) | MoE + MLA | + topology comparison |
 | [Kimi K2.5](charts/output/kimi-k2.5/) | 1T+ (32B active) | MoE + MLA | + topology comparison |
+| [GLM-5.3](results/glm-5.3/) | 744B (40B active) | MoE + MLA + DSA | single node, mixed 4/8 + MTP head: accuracy, prefill, decode, 230K context, perplexity |
 
 ---
 

@@ -1,0 +1,11 @@
+model,quant,benchmark,run,items,dataset_total,correct,accuracy,time_s,harness,harness_thinking_flag,batched,reasoning_effort,platform,runtime
+GLM-5.3,mixed-4_8bit+MTP,mmlu_pro,1,300,12032,255,0.85,2045.9,"omlx-0.6.4 accuracy benchmark, greedy",False,False,max (template default; flag ignored),Apple M3 Ultra 512GB,oMLX 0.6.4 / mlx 0.32.0 / mlx-lm 0.31.3
+GLM-5.3,mixed-4_8bit+MTP,truthfulqa,1,817,817,750,0.918,2296.4,"omlx-0.6.4 accuracy benchmark, greedy",False,False,max (template default; flag ignored),Apple M3 Ultra 512GB,oMLX 0.6.4 / mlx 0.32.0 / mlx-lm 0.31.3
+GLM-5.3,mixed-4_8bit+MTP,gsm8k,1,100,1319,97,0.97,722.5,"omlx-0.6.4 accuracy benchmark, greedy",False,False,max (template default; flag ignored),Apple M3 Ultra 512GB,oMLX 0.6.4 / mlx 0.32.0 / mlx-lm 0.31.3
+GLM-5.3,mixed-4_8bit+MTP,livecodebench,1,100,1054,63,0.63,14014.0,"omlx-0.6.4 accuracy benchmark, greedy",False,False,max (template default; flag ignored),Apple M3 Ultra 512GB,oMLX 0.6.4 / mlx 0.32.0 / mlx-lm 0.31.3
+GLM-5.3,mixed-4_8bit+MTP,safetybench,1,300,11435,252,0.84,866.1,"omlx-0.6.4 accuracy benchmark, greedy",False,False,max (template default; flag ignored),Apple M3 Ultra 512GB,oMLX 0.6.4 / mlx 0.32.0 / mlx-lm 0.31.3
+GLM-5.3,mixed-4_8bit+MTP,mmlu_pro,2,300,12032,257,0.8567,2990.1,"omlx-0.6.4 accuracy benchmark, greedy",True,True,max (template default; flag ignored),Apple M3 Ultra 512GB,oMLX 0.6.4 / mlx 0.32.0 / mlx-lm 0.31.3
+GLM-5.3,mixed-4_8bit+MTP,truthfulqa,2,817,817,755,0.9241,3378.5,"omlx-0.6.4 accuracy benchmark, greedy",True,True,max (template default; flag ignored),Apple M3 Ultra 512GB,oMLX 0.6.4 / mlx 0.32.0 / mlx-lm 0.31.3
+GLM-5.3,mixed-4_8bit+MTP,gsm8k,2,100,1319,97,0.97,735.4,"omlx-0.6.4 accuracy benchmark, greedy",True,True,max (template default; flag ignored),Apple M3 Ultra 512GB,oMLX 0.6.4 / mlx 0.32.0 / mlx-lm 0.31.3
+GLM-5.3,mixed-4_8bit+MTP,livecodebench,2,100,1054,58,0.58,12419.5,"omlx-0.6.4 accuracy benchmark, greedy",True,True,max (template default; flag ignored),Apple M3 Ultra 512GB,oMLX 0.6.4 / mlx 0.32.0 / mlx-lm 0.31.3
+GLM-5.3,mixed-4_8bit+MTP,safetybench,2,300,11435,257,0.8567,960.2,"omlx-0.6.4 accuracy benchmark, greedy",True,True,max (template default; flag ignored),Apple M3 Ultra 512GB,oMLX 0.6.4 / mlx 0.32.0 / mlx-lm 0.31.3

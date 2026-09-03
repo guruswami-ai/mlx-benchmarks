@@ -1,0 +1,11 @@
+model,quant,prompt_tokens,prefill_tps,ttft_s,cached_tokens,condition
+GLM-5.3,mixed-4_8bit+MTP,1024,191.4,5.3,0,"cold process, admin bench, gen 32"
+GLM-5.3,mixed-4_8bit+MTP,4096,193.1,21.2,0,"cold process, admin bench, gen 32"
+GLM-5.3,mixed-4_8bit+MTP,8192,169.2,48.4,0,"cold process, admin bench, gen 32"
+GLM-5.3,mixed-4_8bit+MTP,16384,158.0,103.7,0,"cold process, admin bench, gen 32"
+GLM-5.3,mixed-4_8bit+MTP,32768,156.4,209.5,0,"cold process, admin bench, gen 32"
+GLM-5.3,4bit+MTP,1024,192.6,5.3,0,"cold process, admin bench, gen 32"
+GLM-5.3,4bit+MTP,4096,193.3,21.2,0,"cold process, admin bench, gen 32"
+GLM-5.3,4bit+MTP,8192,169.4,48.3,0,"cold process, admin bench, gen 32"
+GLM-5.3,4bit+MTP,16384,158.2,103.6,0,"cold process, admin bench, gen 32"
+GLM-5.3,4bit+MTP,32768,156.6,209.3,0,"cold process, admin bench, gen 32"
