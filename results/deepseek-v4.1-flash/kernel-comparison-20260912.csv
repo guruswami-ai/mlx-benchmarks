@@ -1,0 +1,5 @@
+kernels,metric,value,unit,note
+fallback,prefill_10k,196,tok_s,pure MLX, no custom kernels compiled
+native,prefill_10k,454,tok_s,deepseek_v41_packed_attention compiled
+fallback,decode,31.4,tok_s,MTP on
+native,decode,31.3,tok_s,MTP on; compute-bound kernel does not help decode

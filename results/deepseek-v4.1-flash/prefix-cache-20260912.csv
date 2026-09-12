@@ -1,0 +1,5 @@
+prompt_tokens,stored_tokens,intermediate_snapshots,lookup_ms,store_boundary_ms,note
+71,0,0,0.1,0.0,boundary_snapshot_unavailable below one 2048 block
+9970,8192,3,0.8,2.5,trailing partial block skipped
+10086,8192,3,0.8,2.5,
+397604,397312,193,14.5,7.2,400K prefill is cacheable and resumable

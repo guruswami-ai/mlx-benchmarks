@@ -1,0 +1,6 @@
+engram,mtp,kernels,decode_tok_s,prompt_tokens,output_tokens,runs
+ssd,off,native,14.3,74,156,1
+ssd,on,native,25.75,~70,199,1
+ssd,on,native,31.3,73,155,1
+ram,on,native,35.88,~70,193,1
+ram,on,native,36.23,~70,195,1

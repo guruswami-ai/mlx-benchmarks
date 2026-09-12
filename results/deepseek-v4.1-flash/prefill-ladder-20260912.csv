@@ -1,0 +1,9 @@
+context_tokens,engram,kernels,mtp,prefill_tok_s,wall_s,completion_tokens,cached_tokens
+9973,ssd,native,on,454,24.36,75,0
+31879,ssd,native,on,428,75.7,39,0
+127272,ssd,native,on,376,340.2,44,0
+254468,ssd,native,on,406,628.8,45,0
+397552,ssd,native,on,373,1067.8,43,0
+9970,ram,native,on,459,24.95,116,0
+397555,ram,native,on,373,1067.4,49,0
+9973,ssd,fallback,on,196,53.88,78,0

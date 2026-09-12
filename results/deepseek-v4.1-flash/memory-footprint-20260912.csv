@@ -1,0 +1,9 @@
+engram,state,context_tokens,phys_footprint_gib,note
+ssd,loaded_idle,0,289.02,omlx estimate 302.3 GiB
+ssd,peak,9973,289.12,
+ssd,peak,127272,289.67,
+ssd,peak,254468,289.71,
+ssd,peak,397552,290.30,transient +1.28 GiB over 400K
+ram,loaded_idle,0,403.50,omlx estimate 422.48 GiB
+ram,peak,9970,403.94,
+ram,peak,397555,405.14,transient +1.64 GiB over 400K
