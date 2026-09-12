@@ -7,12 +7,20 @@ Engram tables are requantised, to 4-bit affine at group 32.
 
 **This set measures speed, memory and retrieval. It does not measure accuracy or perplexity.**
 
+The authoritative performance numbers are `omlx-benchmark-20260912.csv` and
+`continuous-batching-20260912.csv`, from the oMLX GUI benchmark. The ad-hoc files record probes
+that were run first and are kept because they cover conditions the benchmark does not: Engram
+residency, kernel fallback, and needle retrieval to 400K. Note both sources report prefill as
+`accounting=prompt_estimate`, which is TTFT divided by prompt tokens, not a kernel-level measurement.
+
 | File | What it holds |
 |---|---|
 | `prefill-ladder-20260912.csv` | prefill tok/s from 10K to 400K, Engram on SSD and in RAM, and with custom kernels off |
 | `decode-engram-residency-20260912.csv` | decode tok/s across Engram residency and MTP state |
 | `context-needle-20260912.csv` | needle retrieval at 32K, 128K, 256K and 400K |
 | `mtp-acceptance-20260912.csv` | DSpark MTP draft acceptance against prompt length, from the engine's own telemetry |
+| `omlx-benchmark-20260912.csv` | the oMLX GUI benchmark, 1K to 200K: TTFT, TPOT, prefill, decode, peak memory |
+| `continuous-batching-20260912.csv` | batch 1 to 8: aggregate decode, per-request prefill, TTFT |
 | `prefix-cache-20260912.csv` | boundary cache snapshot sizes and timings, including the 400K store |
 | `memory-footprint-20260912.csv` | `ri_phys_footprint` at load and at peak, both Engram modes |
 | `kernel-comparison-20260912.csv` | native custom kernels against the pure-MLX fallback |
@@ -39,21 +47,33 @@ decode being bound elsewhere. The kernels are opt-in: `setup.py` gates the build
 `OMLX_WITH_CUSTOM_KERNEL`, and the Metal compiler ships only with full Xcode, never with Command
 Line Tools.
 
-**MTP draft acceptance falls with context.** Acceptance ran 92 to 96% on short prompts, 76.9% at
-10K and 73.8% at 397K, with tokens per cycle falling from 3.70 to 2.54. The draft step itself costs
-about 3% of the time, `backbone=3798ms` against `mtp=122ms`, so MTP is nearly free and the backbone
-verify dominates. **Quote a decode figure for this model with its prompt length attached.**
+**MTP draft acceptance is driven by content, not context length. CORRECTED.** An earlier version of
+this file claimed acceptance falls with context. The oMLX benchmark run contradicts it: **96.8%
+acceptance at 200,000 tokens** with 3.76 tokens per cycle and third-position drafts at 28 of 29,
+against **63.6 to 81.7% at 1,024 tokens** with third-position drafts as low as 4 of 7, on the same
+model in the same run. Acceptance is *higher* at 200K than at 1K.
 
-**The 400K prefill is cacheable, so its cost is paid once.** The scheduler stored 397,312 of
-397,604 tokens as a boundary snapshot with 193 intermediate snapshots, at a store cost of 7.2 ms and
-a later lookup cost of 14.5 ms. So the 17.8-minute prefill is a one-time cost for a given prefix,
-not a per-request cost, which is what makes a long session practical. Prompts under one 2048-token
-block store nothing and report `boundary_snapshot_unavailable`.
+The original claim came from comparing a short counting task against long repeated filler, so prompt
+content and context length varied together and the difference was attributed to the wrong one. Across
+all ten observations acceptance ranges 63.6 to 96.8% with no monotonic relationship to prompt length.
+`mtp-acceptance-20260912.csv` carries a `content` column so the confound is visible.
 
-**Deeper draft positions are what decay.** The acceptance drop is not uniform across MTP depth. On
-short prompts the three draft positions accept at 93%, 95% and 88%. At 397K they accept at 94%, 69%
-and 38%. So the first draft token survives long context almost untouched and the third does not,
-which is why tokens per cycle falls while first-position acceptance holds.
+What does hold: the draft step costs about 3% of the time, `backbone=3372.7ms` against `mtp=85.9ms`,
+so MTP is nearly free and the backbone verify dominates. **Quote a decode figure with both the prompt
+length and the content type**, because either can move it.
+
+**Decode does not degrade with context.** The benchmark's TPOT sits in a 26.0 to 31.7 ms band from 4K
+to 200K, a mean of 28.24 ms or 35.4 tok/s, with the best result 38.7 tok/s at 32K. The 1K and 8K rows
+are outliers at 34.56 and 44.12 ms.
+
+**Continuous batching scales to 7.38x.** Aggregate decode goes 29.2 to 215.4 tok/s from batch 1 to
+batch 8. Per-request prefill collapses from 354.2 to 19.7 tok/s and TTFT grows from 2.9 to 27 s, so it
+suits a shared endpoint and not a single interactive session. Ad-hoc concurrent HTTP requests do **not**
+batch: an earlier test of four simultaneous requests showed no gain, because they never align into a
+batch. Only the continuous-batching path aligns them.
+
+**The Apple Neural Engine is idle.** `ane0_duty=0.0000`, `ane1_duty=0.0000`, `full_ane_tiles=0`,
+`gpu_tail_tokens=199999` for both the mlp and gdn categories at 200K. Everything runs on the GPU.
 
 ## Read this before comparing
 
