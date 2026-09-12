@@ -66,11 +66,25 @@ length and the content type**, because either can move it.
 to 200K, a mean of 28.24 ms or 35.4 tok/s, with the best result 38.7 tok/s at 32K. The 1K and 8K rows
 are outliers at 34.56 and 44.12 ms.
 
-**Continuous batching scales to 7.38x.** Aggregate decode goes 29.2 to 215.4 tok/s from batch 1 to
-batch 8. Per-request prefill collapses from 354.2 to 19.7 tok/s and TTFT grows from 2.9 to 27 s, so it
-suits a shared endpoint and not a single interactive session. Ad-hoc concurrent HTTP requests do **not**
-batch: an earlier test of four simultaneous requests showed no gain, because they never align into a
-batch. Only the continuous-batching path aligns them.
+**Continuous batching does NOT scale. The reported 7.38x is an accounting artefact. CORRECTED
+TWICE.** The benchmark's `tg TPS` column sums per-request decode rates, which is not throughput. The
+`E2E` column in the same table disproves it:
+
+| Batch | reported tg tok/s | E2E s | total output tokens | **wall-clock tok/s** | E2E as % of pure serial |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 29.2 | 7.289 | 128 | **17.6** | 100.0 |
+| 2 | 60.6 | 14.070 | 256 | **18.2** | 96.5 |
+| 4 | 110.3 | 27.600 | 512 | **18.6** | 94.7 |
+| 8 | 215.4 | 56.747 | 1024 | **18.0** | 97.3 |
+
+End-to-end time scales **linearly** with batch size, landing within 6% of a fully serial model on
+every row. If batching worked, E2E would stay near 7.3 s as the batch grew. Real throughput goes
+**17.6 to 18.0 tok/s, a 1.03x gain**, and per-request decode time is unchanged.
+
+So requests **do** serialise on this model, consistent with `DSparkMixin.configure_mtp` setting
+`_omlx_mtp_rowwise_unsupported` and with an independent test of four concurrent HTTP requests that
+showed no gain. An earlier version of this file claimed 7.38x, reversing a correct finding on the
+strength of a column labelled "Speedup". **Read `E2E` before believing any speedup column.**
 
 **The Apple Neural Engine is idle.** `ane0_duty=0.0000`, `ane1_duty=0.0000`, `full_ane_tiles=0`,
 `gpu_tail_tokens=199999` for both the mlp and gdn categories at 200K. Everything runs on the GPU.
